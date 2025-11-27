@@ -368,35 +368,40 @@ CcspScalarHelperRegisterMibHandler
 	}
 
 	/* register MIB handler */
-	AnscTraceWarning(("Register scalar mib group '%s'\n", pThisObject->MibName));
-	CcspUtilTraceOid(pThisObject->BaseOid, pThisObject->uOidLen);
-        rc =  memcpy_s(oidReg,sizeof(oidReg), pThisObject->BaseOid, pThisObject->uOidLen * sizeof(oid));
-        if(rc != EOK)
-        {
-             ERR_CHK(rc);
-             return;
-        }
-    
-    PSINGLE_LINK_ENTRY entry; 
-    PCCSP_MIB_VALUE scalar;
-    /* create common cache */
-    mibHandler = netsnmp_cache_handler_get(NULL);
-    if (mibHandler) 
+    AnscTraceWarning(("Register scalar mib group '%s'\n", pThisObject->MibName));
+    CcspUtilTraceOid(pThisObject->BaseOid, pThisObject->uOidLen);
+    rc =  memcpy_s(oidReg,sizeof(oidReg), pThisObject->BaseOid, pThisObject->uOidLen * sizeof(oid));
+    if(rc != EOK)
     {
-        cache = netsnmp_cache_create
-    	(
-         pThisObject->uCacheTimeout,
-    	 scalarGroupCacheLoad,
-    	 scalarGroupCacheFree,
-    	 pThisObject->BaseOid,
-    	 pThisObject->uOidLen
-    	);
-        cache->magic       = (void*)hThisObject;
-        mibHandler->myvoid = (void*)cache;
-        netsnmp_cache_handler_owns_cache(mibHandler);
+        ERR_CHK(rc);
+        return;
     }
+    PSINGLE_LINK_ENTRY entry = AnscQueueGetFirstEntry(&pThisObject->MibValueQueue);
+    PCCSP_MIB_VALUE scalar;
+    int IsFirstEntry = 0;
+    while (entry)
+    {
+        if (IsFirstEntry == 0)
+        {
+            IsFirstEntry = 1;
+            /* create common cache */
+            mibHandler = netsnmp_cache_handler_get(NULL);
+            if (mibHandler)
+            {
+                cache = netsnmp_cache_create
+                    (
+                     pThisObject->uCacheTimeout,
+                     scalarGroupCacheLoad,
+                     scalarGroupCacheFree,
+                     pThisObject->BaseOid,
+                     pThisObject->uOidLen
+                    );
+                cache->magic       = (void*)hThisObject;
+                mibHandler->myvoid = (void*)cache;
+                netsnmp_cache_handler_owns_cache(mibHandler);
+            }
+        }
 
-    for (entry = AnscQueueGetFirstEntry(&pThisObject->MibValueQueue); entry; entry = AnscQueueGetNextEntry(entry)){
         scalar = ACCESS_CCSP_MIB_VALUE(entry);
         oidReg[pThisObject->uOidLen] = scalar->uLastOid;
 
@@ -425,8 +430,8 @@ CcspScalarHelperRegisterMibHandler
                 );
         }
 
-	    reginfo_stats->my_reg_void = (void*)hThisObject;
-	    netsnmp_register_scalar(reginfo_stats);
+        reginfo_stats->my_reg_void = (void*)hThisObject;
+        netsnmp_register_scalar(reginfo_stats);
         //netsnmp_register_scalar_group(reginfo_stats, pThisObject->uMinOid, pThisObject->uMaxOid);
 
         AnscTraceInfo(("  MinOid = %lu, MaxOid = %lu\n", pThisObject->uMinOid, pThisObject->uMaxOid));
@@ -441,6 +446,6 @@ CcspScalarHelperRegisterMibHandler
 
             AnscTraceInfo(("Register Cache handler successfully.\n"));
         }
-        
+        entry = AnscQueueGetNextEntry(entry);
     }
 }
