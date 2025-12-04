@@ -544,42 +544,38 @@ CcspTableHelperRegisterMibHandler
     table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
 	pThisObject->mibMagic.pTableData = (void*)table_data;
 
-	/* add indexes */
-	ccspAddTableIndexes(hThisObject, table_info);
+    /* add indexes */
+    ccspAddTableIndexes(hThisObject, table_info);
 
-	/* set column infor */
-	table_info->min_column = pThisObject->uMinOid;
-	table_info->max_column = pThisObject->uMaxOid;
-    
-    netsnmp_tdata_register( reg, table_data, table_info );
+    /* set column infor */
+    table_info->min_column = pThisObject->uMinOid;
+    table_info->max_column = pThisObject->uMaxOid;
 
-	/* register MIB cache */
+    /* register MIB cache */
     mibHandler = netsnmp_cache_handler_get(NULL);
     if (mibHandler) 
-	{
+    {
         cache = netsnmp_cache_create
-				(
-			  		 pThisObject->uCacheTimeout,
-					 tableGroupCacheLoad,
-					 tableGroupCacheFree,
- 					 pThisObject->BaseOid,
-					 pThisObject->uOidLen
-   			    );
- 
-		/* no cache refresh after set */
-		cache->flags |= NETSNMP_CACHE_DONT_INVALIDATE_ON_SET;
+            (
+             pThisObject->uCacheTimeout,
+             tableGroupCacheLoad,
+             tableGroupCacheFree,
+             pThisObject->BaseOid,
+             pThisObject->uOidLen
+            );
 
-		cache->magic       = (void*)&pThisObject->mibMagic;
+        /* no cache refresh after set */
+        cache->flags |= NETSNMP_CACHE_DONT_INVALIDATE_ON_SET;
+
+        cache->magic       = (void*)&pThisObject->mibMagic;
         mibHandler->myvoid = (void*)cache;
         netsnmp_cache_handler_owns_cache(mibHandler);
 
-		netsnmp_inject_handler
-			(
-				reg,
-				mibHandler
-			);
+        if (mibHandler)
+            netsnmp_inject_handler( reg, mibHandler);
 
-		AnscTraceInfo(("Register Cache handler for Table Mibs successfully.\n"));
-	}
+        AnscTraceInfo(("Register Cache handler for Table Mibs successfully.\n"));
+    }
+    netsnmp_tdata_register( reg, table_data, table_info  );
 }
 
