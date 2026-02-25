@@ -90,8 +90,7 @@ CcspCreateTableHelper
 		return NULL;
 	}
 
-	AnscZeroMemory((void*)pThisObject, sizeof(CCSP_TABLE_HELPER_OBJECT));
-    char buff [5];
+	AnscZeroMemory((void*)pThisObject, sizeof(CCSP_TABLE_HELPER_OBJECT))
 	
 	pThisObject->bHasWritable	         = FALSE;
 	pThisObject->uRowStatus              = 0;
