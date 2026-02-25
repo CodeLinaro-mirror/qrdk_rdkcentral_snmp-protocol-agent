@@ -92,6 +92,8 @@ CcspCreateTableHelper
 
 	AnscZeroMemory((void*)pThisObject, sizeof(CCSP_TABLE_HELPER_OBJECT));
 
+	AnscFreeMemory(pThisObject);
+	// COVERITY ISSUE: Using pThisObject after free it
 	pThisObject->bHasWritable	         = FALSE;
 	pThisObject->uRowStatus              = 0;
 	pThisObject->uMaxOid		         = 0;
