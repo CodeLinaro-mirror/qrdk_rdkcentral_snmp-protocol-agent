@@ -2596,16 +2596,8 @@ CcspUtilDMValueToMIB
                 addr6 = AnscAllocateMemory(sizeof(struct in6_addr));
                 if (addr6)
                 {
-                    if (inet_pton(AF_INET6, pValue, addr6) == 1)
-                    {
-                        pMibValue->Value.puBuffer = (UCHAR*)addr6;
-                        pMibValue->uSize = sizeof(struct in6_addr);
-                    }
-                    else
-                    {
-                        AnscTraceError(("inet_pton failed!"));
-                        AnscFreeMemory(addr6);
-                    }
+                    inet_pton(AF_INET6, pValue, addr6);
+                    pMibValue->uSize = sizeof(struct in6_addr);
                 }
             }
 			else if( pValue != NULL)
