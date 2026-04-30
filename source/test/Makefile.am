@@ -34,6 +34,7 @@ snmp_subagent_gtest_bin_CPPFLAGS = -I$(PKG_CONFIG_SYSROOT_DIR)$(includedir)/gtes
                                    -I${top_srcdir}/source/custom \
                                    -I${top_srcdir}/source/include \
                                    -I${top_srcdir}/source/SnmpPlugin \
+                                   -I$(HOME)/usr/local/include/ccsp \
                                    -DUNIT_TEST_DOCKER_SUPPORT \
                                    -DFEATURE_RDKB_WAN_MANAGER
 
