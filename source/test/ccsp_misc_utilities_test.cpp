@@ -57,10 +57,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibValueQueueAsnOctetStrSuccess)
     pQueueHeader->Depth = 1;
 
     CcspUtilCleanMibValueQueue(pQueueHeader);
-    // Clean up
-    free(pMibValue->Value.pBuffer);
-    free(pMibValue->BackValue.pBuffer);
-    free(pMibValue);
+    // Clean up - only free queue header, CcspUtilCleanMibValueQueue frees the entries
     free(pQueueHeader);
 }
 
@@ -83,10 +80,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibValueQueueAsnBitStrSuccess)
     pQueueHeader->Depth = 1;
 
     CcspUtilCleanMibValueQueue(pQueueHeader);
-    // Clean up
-    free(pMibValue->Value.pBuffer);
-    free(pMibValue->BackValue.pBuffer);
-    free(pMibValue);
+    // Clean up - only free queue header, CcspUtilCleanMibValueQueue frees the entries
     free(pQueueHeader);
 }
 
@@ -109,8 +103,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibObjQueueSuccess)
     pQueueHeader->Depth = 1;
 
     CcspUtilCleanMibObjQueue(pQueueHeader);
-    // Clean up
-    free(pMibMap);
+    // Clean up - only free queue header, CcspUtilCleanMibObjQueue frees the entries
     free(pQueueHeader);
 }
 //Test for CcspUtilCleanIndexMapQueue - success
@@ -139,11 +132,8 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMapQueueSuccess)
     pQueueHeader->Depth = 1;
 
     CcspUtilCleanIndexMapQueue(pQueueHeader);
-    // Clean up
-    free(pInsNumberMap);
-    free(pMapping);
+    // Clean up - only free queue header, CcspUtilCleanIndexMapQueue frees the entries
     free(pQueueHeader);
-
 }
 
 //Test for CcspUtilCleanMibMapping - success
@@ -163,10 +153,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibMappingSuccess)
     pMapping->MapQueue.Next.Next = (PSINGLE_LINK_ENTRY)pIntStringMap;
 
     CcspUtilCleanMibMapping(pMapping);
-    // Clean up
-    free(pIntStringMap->pString);
-    free(pIntStringMap);
-    free(pMapping);
+    // Clean up - CcspUtilCleanMibMapping frees everything including pMapping
 }
 
 //Test for CcspUtilCleanIndexMappingInsNumber - success
@@ -186,9 +173,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingInsNumberSuccess)
     pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pInsNumberMap;
 
     CcspUtilCleanIndexMapping(pMapping);
-    // Clean up
-    free(pInsNumberMap);
-    free(pMapping);
+    // Clean up - CcspUtilCleanIndexMapping frees everything including pMapping
 }
 
 //Test for CcspUtilCleanIndexMappingMapToDm - success
@@ -208,10 +193,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
     pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pIntStringMap;
 
     CcspUtilCleanIndexMapping(pMapping);
-    // Clean up
-    free(pIntStringMap->pString);
-    free(pIntStringMap);
-    free(pMapping);
+    // Clean up - CcspUtilCleanIndexMapping frees everything including pMapping
 }
 
 //Test for CcspUtilParseOidValueString - Failure
