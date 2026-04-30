@@ -85,6 +85,7 @@
 #include "ccsp_scalar_helper.h"
 #include "ccsp_table_helper.h"
 #include "ccsp_mib_utilities.h"
+#include "ccsp_snmp_debug.h"
 
 #include "ansc_xml_dom_parser_interface.h"
 #include "ansc_xml_dom_parser_external_api.h"
