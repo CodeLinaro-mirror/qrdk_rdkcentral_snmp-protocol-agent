@@ -54,6 +54,7 @@
 #include "ccsp_table_helper.h"
 #include "ccsp_table_helper_internal.h"
 #include "ccsp_mib_utilities.h"
+#include "ccsp_snmp_debug.h"
 
 #include "ansc_load_library.h"
 #include "ansc_xml_dom_parser_interface.h"
@@ -574,7 +575,7 @@ CcspTableHelperRegisterMibHandler
         if (mibHandler)
             netsnmp_inject_handler( reg, mibHandler);
 
-        AnscTraceInfo(("Register Cache handler for Table Mibs successfully.\n"));
+        AnscTraceDebug(("Register Cache handler for Table Mibs successfully.\n"));
     }    
 }
 

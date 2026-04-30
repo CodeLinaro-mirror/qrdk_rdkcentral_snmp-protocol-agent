@@ -35,6 +35,7 @@
 
 /*********************************************************************************
 
+#include "ccsp_snmp_debug.h"
     description:
 
         This is the implementation of utility functions used by
@@ -2047,7 +2048,7 @@ CcspUtilDMFilterToNamespace
 
 	if( !Cosa_FindDestComp(pBuffer, ppDestName, ppDestPath) || *ppDestName == NULL || *ppDestPath == NULL)
 	{
-		AnscTraceWarning(("Failed to find the CCSP component who supports '%s'\n", pBuffer));
+		AnscTraceDebug(("Failed to find the CCSP component who supports '%s'\n", pBuffer));
 
 		return insNumber;
 	}

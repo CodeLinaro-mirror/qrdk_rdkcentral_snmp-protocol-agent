@@ -54,6 +54,7 @@
 #include "ccsp_scalar_helper.h"
 #include "ccsp_scalar_helper_internal.h"
 #include "ccsp_mib_utilities.h"
+#include "ccsp_snmp_debug.h"
 
 #include "ansc_load_library.h"
 #include "ansc_xml_dom_parser_interface.h"
@@ -444,7 +445,7 @@ CcspScalarHelperRegisterMibHandler
                  mibHandler
                 );
 
-            AnscTraceInfo(("Register Cache handler successfully.\n"));
+            AnscTraceDebug(("Register Cache handler successfully.\n"));
         }
         entry = AnscQueueGetNextEntry(entry);
     }

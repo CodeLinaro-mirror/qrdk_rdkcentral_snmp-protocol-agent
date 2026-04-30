@@ -55,6 +55,7 @@
 #include "ccsp_table_helper.h"
 #include "ccsp_table_helper_internal.h"
 #include "ccsp_mib_utilities.h"
+#include "ccsp_snmp_debug.h"
 
 #include "ansc_load_library.h"
 #include "ansc_xml_dom_parser_interface.h"
@@ -1128,7 +1129,7 @@ CcspTableHelperRefreshCache
 
 		if( !Cosa_FindDestComp(pDMString, &pThisObject->pCcspComp, &pThisObject->pCcspPath) )
 		{
-			AnscTraceWarning(("Failed to find the CCSP component who supports '%s'\n", pDMString));
+			AnscTraceDebug(("Failed to find the CCSP component who supports '%s'\n", pDMString));
 
 			return -1;
 		}
