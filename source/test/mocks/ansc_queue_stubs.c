@@ -20,24 +20,10 @@
 #include "ansc_platform.h"
 
 /**
- * AnscQueueInitializeHeader - Initialize a queue header
- * From common-library/source/cosa/include/ansc_wrapper_api.h
- *
- * @param QueueHead: Pointer to the queue header to initialize
- */
-void
-AnscQueueInitializeHeader
-    (
-        PQUEUE_HEADER               QueueHead
-    )
-{
-    QueueHead->Next.Next = NULL;
-    QueueHead->Last.Next = NULL;
-    QueueHead->Depth     = 0;
-}
-
-/**
  * AnscQueuePopEntry - Remove and return the first entry from a queue
+ * This function is defined as ANSC_FORCEINLINE in ansc_wrapper_api.h but
+ * the inline expansion doesn't produce a linkable symbol, so we provide
+ * a stub implementation here.
  *
  * @param QueueHead: Pointer to the queue header
  *
@@ -63,33 +49,4 @@ AnscQueuePopEntry
         QueueHead->Last.Next = NULL;
     }
     return  FirstEntry;
-}
-
-/**
- * AnscQueuePushEntry - Add an entry to the end of a queue
- *
- * @param QueueHead: Pointer to the queue header
- * @param Entry: The entry to add
- */
-void
-AnscQueuePushEntry
-    (
-        PQUEUE_HEADER               QueueHead,
-        PSINGLE_LINK_ENTRY          Entry
-    )
-{
-    Entry->Next = NULL;
-
-    if ( QueueHead->Next.Next == NULL )
-    {
-        QueueHead->Next.Next = Entry;
-        QueueHead->Last.Next = Entry;
-    }
-    else
-    {
-        QueueHead->Last.Next->Next = Entry;
-        QueueHead->Last.Next       = Entry;
-    }
-
-    QueueHead->Depth++;
 }
