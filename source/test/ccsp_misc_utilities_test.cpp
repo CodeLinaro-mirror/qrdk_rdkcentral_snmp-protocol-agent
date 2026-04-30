@@ -46,20 +46,20 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibValueQueueAsnOctetStrSuccess)
 
     // Sample data for uType, Linkage, Value.pBuffer, and BackValue.pBuffer
     PCCSP_MIB_VALUE pMibValue = (PCCSP_MIB_VALUE)malloc(sizeof(CCSP_MIB_VALUE));
+    memset(pMibValue, 0, sizeof(CCSP_MIB_VALUE));
     pMibValue->uType = ASN_OCTET_STR; 
-    pMibValue->Linkage.Next =  NULL;
+    pMibValue->Linkage.Next = NULL;
     pMibValue->Value.pBuffer = strdup("SampleValue");
     pMibValue->BackValue.pBuffer = strdup("SampleBackValue");
 
-    // Initialize the queue header
-    pQueueHeader->Next.Next = (PSINGLE_LINK_ENTRY)pMibValue;
-    pQueueHeader->Last.Next = NULL;
+    // Initialize the queue header - Last.Next must also point to the entry
+    pQueueHeader->Next.Next = &pMibValue->Linkage;
+    pQueueHeader->Last.Next = &pMibValue->Linkage;
     pQueueHeader->Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (Value.pBuffer, BackValue.pBuffer, pMibValue)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(3)
-                .WillRepeatedly(Invoke(free));
+                .Times(3);
 
     CcspUtilCleanMibValueQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanMibValueQueue frees the entries
@@ -74,20 +74,20 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibValueQueueAsnBitStrSuccess)
 
     // Sample data for uType, Linkage, Value.pBuffer, and BackValue.pBuffer
     PCCSP_MIB_VALUE pMibValue = (PCCSP_MIB_VALUE)malloc(sizeof(CCSP_MIB_VALUE));
+    memset(pMibValue, 0, sizeof(CCSP_MIB_VALUE));
     pMibValue->uType = ASN_BIT_STR; 
-    pMibValue->Linkage.Next =  NULL;
+    pMibValue->Linkage.Next = NULL;
     pMibValue->Value.pBuffer = strdup("SampleValue");
     pMibValue->BackValue.pBuffer = strdup("SampleBackValue");
 
-    // Initialize the queue header
-    pQueueHeader->Next.Next = (PSINGLE_LINK_ENTRY)pMibValue;
-    pQueueHeader->Last.Next = NULL;
+    // Initialize the queue header - Last.Next must also point to the entry
+    pQueueHeader->Next.Next = &pMibValue->Linkage;
+    pQueueHeader->Last.Next = &pMibValue->Linkage;
     pQueueHeader->Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (Value.puBuffer, BackValue.puBuffer, pMibValue)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(3)
-                .WillRepeatedly(Invoke(free));
+                .Times(3);
 
     CcspUtilCleanMibValueQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanMibValueQueue frees the entries
@@ -107,15 +107,14 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibObjQueueSuccess)
     pMibMap->MibInfo.uLastOid = 1002;
     strcpy(pMibMap->MibInfo.pType, "MacAddress");
 
-    // Initialize the queue header
-    pQueueHeader->Next.Next = (PSINGLE_LINK_ENTRY)pMibMap;
-    pQueueHeader->Last.Next = NULL;
+    // Initialize the queue header - Last.Next must also point to the entry
+    pQueueHeader->Next.Next = &pMibMap->Linkage;
+    pQueueHeader->Last.Next = &pMibMap->Linkage;
     pQueueHeader->Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (pMibMap)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(1)
-                .WillOnce(Invoke(free));
+                .Times(1);
 
     CcspUtilCleanMibObjQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanMibObjQueue frees the entries
@@ -139,17 +138,18 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMapQueueSuccess)
 
     pMapping->Linkage.Next = NULL;
     pMapping->uMapType = CCSP_MIB_MAP_TO_INSNUMBER;
-    pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pInsNumberMap;
+    pMapping->IndexQueue.Next.Next = &pInsNumberMap->Linkage;
+    pMapping->IndexQueue.Last.Next = &pInsNumberMap->Linkage;
+    pMapping->IndexQueue.Depth = 1;
 
-    // Initialize the queue header
-    pQueueHeader->Next.Next = (PSINGLE_LINK_ENTRY)pMapping;
-    pQueueHeader->Last.Next = NULL;
+    // Initialize the queue header - Last.Next must also point to the entry
+    pQueueHeader->Next.Next = &pMapping->Linkage;
+    pQueueHeader->Last.Next = &pMapping->Linkage;
     pQueueHeader->Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (pInsNumberMap, pMapping)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(2)
-                .WillRepeatedly(Invoke(free));
+                .Times(2);
 
     CcspUtilCleanIndexMapQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanIndexMapQueue frees the entries
@@ -170,12 +170,13 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibMappingSuccess)
     pIntStringMap->EnumCode = 2;
     // Sample data for uType, Linkage, Value.pBuffer, and BackValue.pBuffer
     pMapping->bHasMapping = TRUE;
-    pMapping->MapQueue.Next.Next = (PSINGLE_LINK_ENTRY)pIntStringMap;
+    pMapping->MapQueue.Next.Next = &pIntStringMap->Linkage;
+    pMapping->MapQueue.Last.Next = &pIntStringMap->Linkage;
+    pMapping->MapQueue.Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (pString, pIntStringMap)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(2)
-                .WillRepeatedly(Invoke(free));
+                .Times(2);
 
     CcspUtilCleanMibMapping(pMapping);
     // Clean up - CcspUtilCleanMibMapping does NOT free pMapping itself
@@ -196,12 +197,13 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingInsNumberSuccess)
 
     pMapping->Linkage.Next = NULL;
     pMapping->uMapType = CCSP_MIB_MAP_TO_INSNUMBER;
-    pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pInsNumberMap;
+    pMapping->IndexQueue.Next.Next = &pInsNumberMap->Linkage;
+    pMapping->IndexQueue.Last.Next = &pInsNumberMap->Linkage;
+    pMapping->IndexQueue.Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (pInsNumberMap)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(1)
-                .WillOnce(Invoke(free));
+                .Times(1);
 
     CcspUtilCleanIndexMapping(pMapping);
     // Clean up - CcspUtilCleanIndexMapping does NOT free pMapping itself
@@ -222,12 +224,13 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
 
     pMapping->Linkage.Next = NULL;
     pMapping->uMapType = CCSP_MIB_MAP_TO_DM;
-    pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pIntStringMap;
+    pMapping->IndexQueue.Next.Next = &pIntStringMap->Linkage;
+    pMapping->IndexQueue.Last.Next = &pIntStringMap->Linkage;
+    pMapping->IndexQueue.Depth = 1;
 
     // Set up expectations for AnscFreeMemory calls (pString, pIntStringMap)
     EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
-                .Times(2)
-                .WillRepeatedly(Invoke(free));
+                .Times(2);
 
     CcspUtilCleanIndexMapping(pMapping);
     // Clean up - CcspUtilCleanIndexMapping does NOT free pMapping itself
