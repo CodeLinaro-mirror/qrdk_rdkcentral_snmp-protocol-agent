@@ -34,8 +34,6 @@
 **********************************************************************/
 
 /*********************************************************************************
-
-#include "ccsp_snmp_debug.h"
     description:
 
         This is the implementation of utility functions used by
