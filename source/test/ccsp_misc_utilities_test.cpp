@@ -56,6 +56,11 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibValueQueueAsnOctetStrSuccess)
     pQueueHeader->Last.Next = NULL;
     pQueueHeader->Depth = 1;
 
+    // Set up expectations for AnscFreeMemory calls (Value.pBuffer, BackValue.pBuffer, pMibValue)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(3)
+                .WillRepeatedly(Invoke(free));
+
     CcspUtilCleanMibValueQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanMibValueQueue frees the entries
     free(pQueueHeader);
@@ -79,6 +84,11 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibValueQueueAsnBitStrSuccess)
     pQueueHeader->Last.Next = NULL;
     pQueueHeader->Depth = 1;
 
+    // Set up expectations for AnscFreeMemory calls (Value.puBuffer, BackValue.puBuffer, pMibValue)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(3)
+                .WillRepeatedly(Invoke(free));
+
     CcspUtilCleanMibValueQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanMibValueQueue frees the entries
     free(pQueueHeader);
@@ -101,6 +111,11 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibObjQueueSuccess)
     pQueueHeader->Next.Next = (PSINGLE_LINK_ENTRY)pMibMap;
     pQueueHeader->Last.Next = NULL;
     pQueueHeader->Depth = 1;
+
+    // Set up expectations for AnscFreeMemory calls (pMibMap)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(1)
+                .WillOnce(Invoke(free));
 
     CcspUtilCleanMibObjQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanMibObjQueue frees the entries
@@ -131,6 +146,11 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMapQueueSuccess)
     pQueueHeader->Last.Next = NULL;
     pQueueHeader->Depth = 1;
 
+    // Set up expectations for AnscFreeMemory calls (pInsNumberMap, pMapping)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(2)
+                .WillRepeatedly(Invoke(free));
+
     CcspUtilCleanIndexMapQueue(pQueueHeader);
     // Clean up - only free queue header, CcspUtilCleanIndexMapQueue frees the entries
     free(pQueueHeader);
@@ -152,8 +172,14 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanMibMappingSuccess)
     pMapping->bHasMapping = TRUE;
     pMapping->MapQueue.Next.Next = (PSINGLE_LINK_ENTRY)pIntStringMap;
 
+    // Set up expectations for AnscFreeMemory calls (pString, pIntStringMap)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(2)
+                .WillRepeatedly(Invoke(free));
+
     CcspUtilCleanMibMapping(pMapping);
-    // Clean up - CcspUtilCleanMibMapping frees everything including pMapping
+    // Clean up - CcspUtilCleanMibMapping does NOT free pMapping itself
+    free(pMapping);
 }
 
 //Test for CcspUtilCleanIndexMappingInsNumber - success
@@ -172,8 +198,14 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingInsNumberSuccess)
     pMapping->uMapType = CCSP_MIB_MAP_TO_INSNUMBER;
     pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pInsNumberMap;
 
+    // Set up expectations for AnscFreeMemory calls (pInsNumberMap)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(1)
+                .WillOnce(Invoke(free));
+
     CcspUtilCleanIndexMapping(pMapping);
-    // Clean up - CcspUtilCleanIndexMapping frees everything including pMapping
+    // Clean up - CcspUtilCleanIndexMapping does NOT free pMapping itself
+    free(pMapping);
 }
 
 //Test for CcspUtilCleanIndexMappingMapToDm - success
@@ -192,8 +224,14 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
     pMapping->uMapType = CCSP_MIB_MAP_TO_DM;
     pMapping->IndexQueue.Next.Next = (PSINGLE_LINK_ENTRY)pIntStringMap;
 
+    // Set up expectations for AnscFreeMemory calls (pString, pIntStringMap)
+    EXPECT_CALL(*g_anscMemoryMock, AnscFreeMemoryOrig(_))
+                .Times(2)
+                .WillRepeatedly(Invoke(free));
+
     CcspUtilCleanIndexMapping(pMapping);
-    // Clean up - CcspUtilCleanIndexMapping frees everything including pMapping
+    // Clean up - CcspUtilCleanIndexMapping does NOT free pMapping itself
+    free(pMapping);
 }
 
 //Test for CcspUtilParseOidValueString - Failure
