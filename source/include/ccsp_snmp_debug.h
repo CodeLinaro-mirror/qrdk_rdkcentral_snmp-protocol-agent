@@ -22,22 +22,11 @@
 
 #include <stdio.h>
 
-#ifndef CCSP_SNMP_DEBUG_TRACE
-#if defined(CCSP_SNMP_ENABLE_DEBUG_PRINT)
-#define CCSP_SNMP_DEBUG_TRACE(a)                             \
+#undef  AnscTraceDebug
+#define AnscTraceDebug(a)                                    \
     do {                                                     \
         printf("%s:%d> ", __FUNCTION__, __LINE__);           \
         printf a;                                            \
     } while (0)
-#else
-#define CCSP_SNMP_DEBUG_TRACE(a)                             \
-    do {                                                     \
-    } while (0)
-#endif
-#endif
-
-#ifndef AnscTraceDebug
-#define AnscTraceDebug(a) CCSP_SNMP_DEBUG_TRACE(a)
-#endif
 
 #endif
