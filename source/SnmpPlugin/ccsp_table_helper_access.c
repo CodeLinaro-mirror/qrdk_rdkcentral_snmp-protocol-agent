@@ -1128,7 +1128,7 @@ CcspTableHelperRefreshCache
 
 		if( !Cosa_FindDestComp(pDMString, &pThisObject->pCcspComp, &pThisObject->pCcspPath) )
 		{
-			CcspTraceDebug(("Failed to find the CCSP component who supports '%s'\n", pDMString));
+			AnscTraceWarning(("Failed to find the CCSP component who supports '%s'\n", pDMString));
 
 			return -1;
 		}
