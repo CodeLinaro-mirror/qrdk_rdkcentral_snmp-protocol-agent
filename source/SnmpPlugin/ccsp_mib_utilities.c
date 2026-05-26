@@ -2047,7 +2047,7 @@ CcspUtilDMFilterToNamespace
 
 	if( !Cosa_FindDestComp(pBuffer, ppDestName, ppDestPath) || *ppDestName == NULL || *ppDestPath == NULL)
 	{
-		CcspTraceDebug(("Failed to find the CCSP component who supports '%s'\n", pBuffer));
+		AnscTraceWarning(("Failed to find the CCSP component who supports '%s'\n", pBuffer));
 
 		return insNumber;
 	}
